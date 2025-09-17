@@ -17,12 +17,26 @@ async function databasePluginHelper(fastify: FastifyInstance) {
   const db = new Database("./database.db");
   fastify.log.info("SQLite database connection established.");
 
-  // Create a simple table for testing if it doesn't exist
+  // Create a simple post table for testing if it doesn't exist
+  // db.exec => executes a SQL query that doesn't return data (E.g: creating tables)
+  // CREATE TABLE IF NOT EXISTS posts => is a core SQL command
+  // IF NOT EXISTS => prevents an error, "idempotent", allows to run the code multiple times without issues.
   db.exec(`
   CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     img_url TEXT NOT NULL,
     caption TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
+  // Create a simple reel table for testing if it doesn't exist
+  db.exec(`
+  CREATE TABLE IF NOT EXISTS reels (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    video_url TEXT NOT NULL,
+    thumbnail_url TEXT NOT NULL,
+    caption TEXT,
+    views INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);

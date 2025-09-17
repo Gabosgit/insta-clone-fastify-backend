@@ -1,24 +1,35 @@
 import Fastify from "fastify";
 import { databasePlugin } from "./core/database/database.plugin";
 import { postsRoutes } from "./modules/posts/posts.routes";
+import { reelsRoutes } from "./modules/reels/reels.routes";
 
+// creates a new Fastify instance
 const fastify = Fastify({
   logger: true,
 });
 
-// Register our database plugin
+// registers the databasePlugin, which connects to the SQLite database
+// and sets up the tables and transactions helpers.
 fastify.register(databasePlugin);
-// Register our new posts routes
-fastify.register(postsRoutes);
 
-// Declare a default route
+// Register routes, making the endpoints for those modules available
+// Register posts routes
+fastify.register(postsRoutes);
+// Register reels routes
+fastify.register(reelsRoutes);
+
+
+// Declare a default route to confirm the server is running.
 fastify.get("/", function (request, reply) {
   reply.send({ hello: "world" });
 });
 
-const port = 3000;
 
+
+const port = 3000;
+// Starts the Server: It listens on port 3000.
 fastify.listen({ port }, function (err, address) {
+    // includes error handling
   if (err) {
     fastify.log.error(err);
     process.exit(1);

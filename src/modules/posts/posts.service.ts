@@ -11,6 +11,14 @@ const postsService = (fastify: FastifyInstance) => {
       const post = fastify.transactions.posts.create(postData);
       return post;
     },
+
+    // getAll method
+    getAll: async () => {
+        fastify.log.info("Fetching all posts");
+        const allPosts = await fastify.transactions.posts.getAll(); // <-- Add 'await' here
+        return allPosts;
+    },
+
   };
 };
 
