@@ -17,6 +17,9 @@ const taggedSchema = z.object({
   tagged_user_id: z.number().int(),
   tagger_user_id: z.number().int(),
   created_at: z.string(),
+  // Fields from the posts table
+  img_url: z.string().url(),
+  caption: z.string().nullable(),
 });
 
 // This will be useful for validating the response from the `GET /tagged` endpoint.

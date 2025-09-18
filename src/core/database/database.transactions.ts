@@ -25,6 +25,10 @@ const createTransactionHelpers = (db: Database) => {
     // Tagged statements
     getTaggedById: db.prepare("SELECT * FROM tagged WHERE id = ?"),
     getAllTagged: db.prepare("SELECT * FROM tagged"),
+    // New prepared statement to get tagged posts with post details
+    getAllTaggedWithPostDetails: db.prepare(
+      "SELECT t.*, p.img_url, p.caption FROM tagged AS t LEFT JOIN posts AS p ON t.post_id = p.id",
+    ),
     createTagged: db.prepare(
       "INSERT INTO tagged (post_id, tagged_user_id, tagger_user_id) VALUES (CAST(@post_id AS INTEGER), CAST(@tagged_user_id AS INTEGER), CAST(@tagger_user_id AS INTEGER)) RETURNING *",
     ),
@@ -72,6 +76,9 @@ const createTransactionHelpers = (db: Database) => {
     getAll: () => {
       return statements.getAllTagged.all();
     },
+    getAllWithPostDetails: () => {
+      return statements.getAllTaggedWithPostDetails.all();
+    },
     create: (data: CreateTaggedDto) => {
       return statements.createTagged.get(data);
     },
@@ -79,7 +86,7 @@ const createTransactionHelpers = (db: Database) => {
   // New highlights helper object
   const highlights = {
     getById: (id: number) => {
-      return statements.getHighlightsById.get(id);
+      return statements.getHighlightById.get(id);
     },
     getAll: () => {
       return statements.getAllHighlights.all();

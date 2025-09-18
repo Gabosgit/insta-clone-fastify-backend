@@ -25,6 +25,7 @@ describe("POST /tagged", () => {
             getById: jest.fn(),
             getAll: jest.fn(),
             create: jest.fn().mockReturnValue(createdTagged),
+            getAllWithPostDetails: jest.fn(), // Add the missing method here
           },
       posts: {
         getById: jest.fn(),

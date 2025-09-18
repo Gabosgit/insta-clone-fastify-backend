@@ -20,8 +20,9 @@ const taggedService = (fastify: FastifyInstance) => {
 
     // getAll method
     getAll: async () => {
-        fastify.log.info("Fetching all tagged");
-        const allTagged = await fastify.transactions.tagged.getAll();
+        fastify.log.info("Fetching all tagged posts with post details");
+        // Call a new method to get all tagged posts with joined data
+        const allTagged = await fastify.transactions.tagged.getAllWithPostDetails();
         return allTagged;
     },
 
