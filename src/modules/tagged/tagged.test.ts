@@ -22,11 +22,11 @@ describe("POST /tagged", () => {
 
     app.decorate("transactions", {
       tagged: {
-            getById: jest.fn(),
-            getAll: jest.fn(),
-            create: jest.fn().mockReturnValue(createdTagged),
-            getAllWithPostDetails: jest.fn(), // Add the missing method here
-          },
+        getById: jest.fn(),
+        getAll: jest.fn(),
+        create: jest.fn().mockReturnValue(createdTagged),
+        getAllWithPostDetails: jest.fn(),
+      },
       posts: {
         getById: jest.fn(),
         getAll: jest.fn(),

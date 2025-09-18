@@ -35,6 +35,7 @@ describe("POST /highlights", () => {
         getById: jest.fn(),
         getAll: jest.fn(),
         create: jest.fn(),
+        getAllWithPostDetails: jest.fn(),
       },
       highlights: {
         getById: jest.fn(),
