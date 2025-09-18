@@ -30,8 +30,8 @@ const createTransactionHelpers = (db: Database) => {
     ),
 
     // Highlight statements
-    getHighlightById: db.prepare("SELECT * FROM tagged WHERE id = ?"),
-    getAllHighlights: db.prepare("SELECT * FROM tagged"),
+    getHighlightById: db.prepare("SELECT * FROM highlights WHERE id = ?"),
+    getAllHighlights: db.prepare("SELECT * FROM highlights"),
     createHighlight: db.prepare(
       "INSERT INTO highlights (user_id, title, cover_image_url) VALUES (CAST(@user_id AS INTEGER), @title, @cover_image_url) RETURNING *",
     ),
