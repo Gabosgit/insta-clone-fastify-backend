@@ -19,6 +19,14 @@ const highlightsService = (fastify: FastifyInstance) => {
         return allHighlights;
     },
 
+    // getById method accept an ID as an argument
+    getById: async (id: number) => {
+        fastify.log.info(`Fetching highlight with ID: ${id}`);
+        // Pass the received ID to the data transaction layer
+        const highlight = await fastify.transactions.highlights.getById(id);
+        return highlight;
+    },
+
   };
 };
 
