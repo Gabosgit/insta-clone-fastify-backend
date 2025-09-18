@@ -19,6 +19,15 @@ const postsService = (fastify: FastifyInstance) => {
         return allPosts;
     },
 
+    // getById method
+    // getById method accept an ID as an argument
+    getById: async (id: number) => {
+        fastify.log.info(`Fetching post with ID: ${id}`);
+        // Pass the received ID to the data transaction layer
+        const post = await fastify.transactions.posts.getById(id);
+        return post;
+    },
+
   };
 };
 
