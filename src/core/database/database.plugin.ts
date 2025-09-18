@@ -27,8 +27,8 @@ async function databasePluginHelper(fastify: FastifyInstance) {
     img_url TEXT NOT NULL,
     caption TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+    );
+  `);
   // Create a simple reel table for testing if it doesn't exist
   db.exec(`
   CREATE TABLE IF NOT EXISTS reels (
@@ -38,8 +38,20 @@ async function databasePluginHelper(fastify: FastifyInstance) {
     caption TEXT,
     views INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-`);
+    );
+  `);
+  // Create a simple tagged table for testing if it doesn't exist
+  db.exec(`
+  CREATE TABLE IF NOT EXISTS tagged (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL,
+    tagged_user_id INTEGER NOT NULL,
+    tagger_user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+
 
   const transactions = createTransactionHelpers(db);
 

@@ -35,6 +35,11 @@ describe("GET /reels", () => {
         getById: jest.fn(),
         getAll: jest.fn().mockReturnValue(mockReels),
       },
+      tagged: {
+        getById: jest.fn(),
+        getAll: jest.fn(),
+        create: jest.fn(),
+      },
     });
 
     app.register(reelsRoutes);

@@ -72,6 +72,7 @@ const createTransactionHelpers = (db: Database) => {
     posts,
     reels,
     tagged,
+    highlights,
   };
 };
 

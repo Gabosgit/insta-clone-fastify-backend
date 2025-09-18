@@ -1,7 +1,7 @@
 import Fastify from "fastify";
-import { postsRoutes } from "./posts.routes";
+import { highlightsRoutes } from "./highlights.routes";
 
-describe("POST /posts", () => {
+describe("POST /highlights", () => {
   it("should create a new post and return it with a 201 status code", async () => {
     const app = Fastify();
 
@@ -28,13 +28,18 @@ describe("POST /posts", () => {
         getAll: jest.fn(),
         create: jest.fn(),
       },
+      highlights: {
+        getById: jest.fn(),
+        getAll: jest.fn(),
+        create: jest.fn().mockReturnValue(createdPost),
+      },
     });
 
-    app.register(postsRoutes);
+    app.register(highlightsRoutes);
 
     const response = await app.inject({
       method: "POST",
-      url: "/posts",
+      url: "/highlights",
       payload: newPostPayload,
     });
 
