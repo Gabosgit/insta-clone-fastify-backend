@@ -27,7 +27,8 @@ const createTransactionHelpers = (db: Database) => {
     getAllTagged: db.prepare("SELECT * FROM tagged"),
     // New prepared statement to get tagged posts with post details
     getAllTaggedWithPostDetails: db.prepare(
-      "SELECT t.*, p.img_url, p.caption FROM tagged AS t LEFT JOIN posts AS p ON t.post_id = p.id",
+      // Cast the IDs to integers to ensure the correct type is returned
+      "SELECT t.id, CAST(t.post_id AS INTEGER) as post_id, CAST(t.tagged_user_id AS INTEGER) as tagged_user_id, CAST(t.tagger_user_id AS INTEGER) as tagger_user_id, t.created_at, p.img_url, p.caption FROM tagged AS t LEFT JOIN posts AS p ON t.post_id = p.id",
     ),
     createTagged: db.prepare(
       "INSERT INTO tagged (post_id, tagged_user_id, tagger_user_id) VALUES (CAST(@post_id AS INTEGER), CAST(@tagged_user_id AS INTEGER), CAST(@tagger_user_id AS INTEGER)) RETURNING *",
