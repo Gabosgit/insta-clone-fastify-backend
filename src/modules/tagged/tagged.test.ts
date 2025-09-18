@@ -36,6 +36,11 @@ describe("POST /tagged", () => {
         getAll: jest.fn(),
         create: jest.fn(),
       },
+      highlights: {
+        getById: jest.fn(),
+        getAll: jest.fn(),
+        create: jest.fn(),
+      },
     });
 
     app.register(taggedRoutes);
