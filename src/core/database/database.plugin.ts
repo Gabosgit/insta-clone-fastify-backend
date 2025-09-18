@@ -50,6 +50,16 @@ async function databasePluginHelper(fastify: FastifyInstance) {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+  // Create a simple highlights table for testing if it doesn't exist
+  db.exec(`
+  CREATE TABLE IF NOT EXISTS tagged (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL,
+    tagged_user_id INTEGER NOT NULL,
+    tagger_user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
 
 
 

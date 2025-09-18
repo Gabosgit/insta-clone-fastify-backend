@@ -4,17 +4,21 @@ import { z } from "zod";
 // The highlight DTO (Data Transferable Object),
 //which will be the shape of the highlight object when it is passed to our database.
 const createHighlightDtoSchema = z.object({
-  img_url: z.string().url(),
-  caption: z.string().nullable().optional(), // Caption can be a string, null, or undefined
+  user_id: z.number(),
+  title: z.string().min(1).max(50),
+  cover_image_url: z.string().url().optional(),
 });
+
 
 // The Highlight object, which will be the shape of the highlight object when it is fetched from our database,
 // where it will include an id and an SQL time-stamp.
 const highlightSchema = z.object({
   id: z.number(),
-  img_url: z.string().url(),
-  caption: z.string().nullable(),
+  user_id: z.number(),
+  title: z.string().min(1).max(50),
+  cover_image_url: z.string().url().optional(),
   created_at: z.string(), // SQLite returns DATETIME as a string by default
+  updated_at: z.string(),
 });
 
 // This will be useful for validating the response from the `GET /highlights` endpoint.

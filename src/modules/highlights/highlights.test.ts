@@ -2,21 +2,29 @@ import Fastify from "fastify";
 import { highlightsRoutes } from "./highlights.routes";
 
 describe("POST /highlights", () => {
-  it("should create a new post and return it with a 201 status code", async () => {
+  it("should create a new highlight and return it with a 201 status code", async () => {
     const app = Fastify();
 
-    const newPostPayload = {
-      img_url: "http://example.com/new-image.jpg",
-      caption: "A brand new post from our test!",
+    const newHighlightPayload = {
+      user_id: 1,
+      title: "highlight title from our test!",
+      cover_image_url: "http://example.com/new-image.jpg",
     };
 
-    const createdPost = { ...newPostPayload, id: 1 };
+    // Fixed date for mocking
+    const mockDate = new Date("2025-09-17T12:00:00Z");
+
+    const createdHighlight = {
+        ...newHighlightPayload,
+        id: 1,
+        created_at: mockDate.toISOString() // Convert the date to an ISO string to match the JSON output
+    };
 
     app.decorate("transactions", {
       posts: {
         getById: jest.fn(),
         getAll: jest.fn(),
-        create: jest.fn().mockReturnValue(createdPost),
+        create: jest.fn(),
       },
       reels: {
         getById: jest.fn(),
@@ -31,7 +39,7 @@ describe("POST /highlights", () => {
       highlights: {
         getById: jest.fn(),
         getAll: jest.fn(),
-        create: jest.fn().mockReturnValue(createdPost),
+        create: jest.fn().mockReturnValue(createdHighlight),
       },
     });
 
@@ -40,10 +48,10 @@ describe("POST /highlights", () => {
     const response = await app.inject({
       method: "POST",
       url: "/highlights",
-      payload: newPostPayload,
+      payload: newHighlightPayload,
     });
 
     expect(response.statusCode).toBe(201);
-    expect(JSON.parse(response.payload)).toEqual(createdPost);
+    expect(JSON.parse(response.payload)).toEqual(createdHighlight);
   });
 });
