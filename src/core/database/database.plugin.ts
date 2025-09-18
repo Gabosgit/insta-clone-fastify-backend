@@ -52,16 +52,24 @@ async function databasePluginHelper(fastify: FastifyInstance) {
   `);
   // Create a simple highlights table for testing if it doesn't exist
   db.exec(`
-  CREATE TABLE IF NOT EXISTS tagged (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id INTEGER NOT NULL,
-    tagged_user_id INTEGER NOT NULL,
-    tagger_user_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  CREATE TABLE IF NOT EXISTS highlights (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      cover_image_url TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
-
-
+    // Trigger to automatically update the 'updated_at' field on every row modification
+  db.exec(`
+    CREATE TRIGGER IF NOT EXISTS update_highlights_updated_at
+    AFTER UPDATE ON highlights
+    FOR EACH ROW
+    BEGIN
+      UPDATE highlights SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+    END;
+  `);
 
   const transactions = createTransactionHelpers(db);
 
