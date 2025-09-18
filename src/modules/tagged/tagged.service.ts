@@ -8,8 +8,14 @@ const taggedService = (fastify: FastifyInstance) => {
       fastify.log.info(`Creating a new tagged post`);
       // This will use the MOCK `transactions` in our test,
       // and the REAL `transactions` in our live application.
-      const tagged = fastify.transactions.tagged.create(taggedData);
-      return tagged;
+      try {
+        // Use `await` to wait for the database operation to complete
+        const tagged = await fastify.transactions.tagged.create(taggedData);
+        return tagged;
+      } catch (error) {
+        fastify.log.error(`Error creating tagged post: ${error}`);
+        throw error;
+      }
     },
 
     // getAll method

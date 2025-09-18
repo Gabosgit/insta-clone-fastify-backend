@@ -26,14 +26,14 @@ const createTransactionHelpers = (db: Database) => {
     getTaggedById: db.prepare("SELECT * FROM tagged WHERE id = ?"),
     getAllTagged: db.prepare("SELECT * FROM tagged"),
     createTagged: db.prepare(
-      "INSERT INTO tagged (post_id, tagged_user_id, tagger_user_id) VALUES (@post_id, @tagged_user_id, @tagger_user_id) RETURNING *",
+      "INSERT INTO tagged (post_id, tagged_user_id, tagger_user_id) VALUES (CAST(@post_id AS INTEGER), CAST(@tagged_user_id AS INTEGER), CAST(@tagger_user_id AS INTEGER)) RETURNING *",
     ),
 
     // Highlight statements
     getHighlightById: db.prepare("SELECT * FROM tagged WHERE id = ?"),
     getAllHighlights: db.prepare("SELECT * FROM tagged"),
     createHighlight: db.prepare(
-      "INSERT INTO highlights (user_id, title, cover_image_url) VALUES (@user_id, @title, @cover_image_url) RETURNING *",
+      "INSERT INTO highlights (user_id, title, cover_image_url) VALUES (CAST(@user_id AS INTEGER), @title, @cover_image_url) RETURNING *",
     ),
   };
 
