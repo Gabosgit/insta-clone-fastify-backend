@@ -14,6 +14,7 @@ const createTransactionHelpers = (db: Database) => {
     createPost: db.prepare(
       "INSERT INTO posts (img_url, caption) VALUES (@img_url, @caption) RETURNING *",
     ),
+    deletePost: db.prepare("DELETE FROM posts WHERE id = ? RETURNING *"),
 
     // Reel statements
     getReelById: db.prepare("SELECT * FROM reels WHERE id = ?"),
@@ -53,6 +54,9 @@ const createTransactionHelpers = (db: Database) => {
     },
     create: (data: CreatePostDto) => {
       return statements.createPost.get(data);
+    },
+    delete: (id: number) => {
+      return statements.deletePost.run(id);
     },
   };
 

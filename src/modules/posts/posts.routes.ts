@@ -104,6 +104,22 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       // Return the post; Fastify handles the JSON serialization
       return post;
     });
+
+    // DELETE route to delete a post by its ID
+    fastify.delete("/posts/:id", async (request, reply) => {
+      const { id } = request.params as { id: string };
+
+      // Attempt to delete the post using your service
+      const deletedPost = await service.delete(parseInt(id, 10));
+
+      if (!deletedPost) {
+        // If the post to be deleted is not found, return a 404 Not Found error
+        reply.code(404).send({ error: "Post not found" });
+      }
+
+      // Return a success message and the ID of the deleted post
+      reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
+    });
 };
 
 export { postsRoutes };

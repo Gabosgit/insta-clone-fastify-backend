@@ -51,6 +51,14 @@ const postsService = (fastify: FastifyInstance) => {
         return post;
     },
 
+    // delete method accepts an ID as an argument
+    delete: async (id: number) => {
+        fastify.log.info(`Attempting to delete post with ID: ${id}`);
+        // Call the data transaction layer to delete the post
+        const deletedPost = await fastify.transactions.posts.delete(id);
+        return deletedPost;
+    },
+
   };
 };
 
