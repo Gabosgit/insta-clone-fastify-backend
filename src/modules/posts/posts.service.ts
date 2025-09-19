@@ -15,6 +15,7 @@ type CreatePostServiceArgs = {
 // Business logic
 const postsService = (fastify: FastifyInstance) => {
   return {
+    // Post upload image
     create: async (data: CreatePostServiceArgs) => {
       fastify.log.info(`Creating a new post`);
 
@@ -33,6 +34,15 @@ const postsService = (fastify: FastifyInstance) => {
         caption: data.caption,
       });
 
+      return post;
+    },
+
+    // Post Input URL
+    create_with_url: async (postData: CreatePostDto) => {
+      fastify.log.info(`Creating a new post`);
+      // This will use the MOCK `transactions` in our test,
+      // and the REAL `transactions` in our live application.
+      const post = fastify.transactions.posts.create(postData);
       return post;
     },
 
