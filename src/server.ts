@@ -10,13 +10,22 @@ import path from "path";
 import fs from "fs/promises";
 import { randomUUID } from "crypto";
 
+import fastifyStatic from "@fastify/static";
+
 // creates a new Fastify instance
 const fastify = Fastify({
   logger: true,
 });
 
+fastify.register(fastifyStatic, {
+  root: path.join(process.cwd(), "public", "uploads"),
+  prefix: "/uploads/",
+});
+
 // Register multipart plugin
 fastify.register(multipart);
+
+
 
 // registers the databasePlugin, which connects to the SQLite database
 // and sets up the tables and transactions helpers.
