@@ -43,10 +43,14 @@ fastify.get("/", function (request, reply) {
 
 
 
-const port = 3000;
-// Starts the Server: It listens on port 3000.
-fastify.listen({ port }, function (err, address) {
-    // includes error handling
+// Remote and Local Port binding
+// process.env.PORT => accesses the PORT environment variable that
+// the hosting service automatically provides to the application
+const port = process.env.PORT || 3000; // fallback 3000
+
+// Number(port): Environment variables are always returned as strings.
+// It's good practice to convert the port value to a number to ensure the listen function works as expected.
+fastify.listen({ port: Number(port) }, function (err, address) {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
