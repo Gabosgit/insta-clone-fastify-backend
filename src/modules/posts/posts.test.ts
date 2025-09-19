@@ -17,6 +17,7 @@ describe("POST /posts", () => {
         getById: jest.fn(),
         getAll: jest.fn(),
         create: jest.fn().mockReturnValue(createdPost),
+        delete: jest.fn(),
       },
       reels: {
         getById: jest.fn(),

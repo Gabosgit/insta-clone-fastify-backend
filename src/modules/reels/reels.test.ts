@@ -28,6 +28,7 @@ describe("GET /reels", () => {
         create: jest.fn(),
         getAll: jest.fn(),
         getById: jest.fn(),
+        delete: jest.fn(),
       },
 
       reels: {

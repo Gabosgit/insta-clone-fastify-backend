@@ -31,6 +31,7 @@ describe("POST /tagged", () => {
         getById: jest.fn(),
         getAll: jest.fn(),
         create: jest.fn(),
+        delete: jest.fn(),
       },
       reels: {
         getById: jest.fn(),
