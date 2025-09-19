@@ -17,6 +17,9 @@ export const fileStorageService = {
     await fs.writeFile(filePath, fileBuffer);
 
     // Return the public URL path
-    return `/uploads/${uniqueFilename}`;
+    //return `/uploads/${uniqueFilename}`;
+
+    const API_URL = process.env.WEB_SERVICE_URL || `http://localhost:3000`;
+    return `${API_URL}/uploads/${uniqueFilename}`;
   },
 };
