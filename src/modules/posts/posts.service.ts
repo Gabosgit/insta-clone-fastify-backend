@@ -19,7 +19,7 @@ const postsService = (fastify: FastifyInstance) => {
     create: async (data: CreatePostServiceArgs) => {
       fastify.log.info(`Creating a new post`);
 
-      let img_url = data.caption; // Fallback if no image, or placeholder
+      let img_url = null // Fallback if no image, or placeholder
 
       if (data.imageFile) {
         // If an image is provided, save it and get the URL
@@ -49,7 +49,7 @@ const postsService = (fastify: FastifyInstance) => {
     // getAll method
     getAll: async () => {
         fastify.log.info("Fetching all posts");
-        const allPosts = await fastify.transactions.posts.getAll(); // <-- Add 'await' here
+        const allPosts = await fastify.transactions.posts.getAll();
         return allPosts;
     },
 
