@@ -1,8 +1,7 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { postsService } from "./posts.service";
 import { z } from "zod"; // Import Zod for validation
-
-//import { CreatePostDto } from "./posts.types";
+import { CreatePostDto } from "./posts.types";
 
 // Define a Zod schema for the expected form fields
 const createPostSchema = z.object({
@@ -14,7 +13,7 @@ const createPostSchema = z.object({
 
 // The route defines the API endpoint
 const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
-  const service = postsService(fastify);
+    const service = postsService(fastify);
 
   fastify.post("/posts", async (request, reply) => {
     // Ensure the request is multipart
@@ -71,6 +70,7 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       });
 
       return reply.code(201).send(newPost);
+
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply
