@@ -9,7 +9,7 @@ type CreatePostData = {
 
 type CreateUploadServiceArgs = {
   caption: string;
-  imageFile?: { buffer: Buffer; filename: string }; // New optional image file
+  fileData?: { buffer: Buffer; filename: string }; // New optional image file
 };
 
 // Business logic
@@ -19,11 +19,11 @@ const uploadService = (fastify: FastifyInstance) => {
     create: async (data: CreateUploadServiceArgs) => {
       fastify.log.info(`Upload a new file`);
 
-      let file_url = data.caption; // Fallback if no file, or placeholder
+      let file_url = null; // Fallback if no file, or placeholder
 
       if (data.fileData) {
         // If an file is provided, save it and get the URL
-        file_url = await fileStorageService.saveFile(
+        file_url = await fileUploadStorageService.saveFile(
           data.fileData.buffer,
           data.fileData.filename,
         );
@@ -39,4 +39,4 @@ const uploadService = (fastify: FastifyInstance) => {
   };
 };
 
-export { postsService };
+export { uploadService };
