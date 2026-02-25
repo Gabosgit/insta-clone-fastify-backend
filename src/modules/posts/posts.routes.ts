@@ -13,7 +13,7 @@ const createPostSchema = z.object({
 
 // The route defines the API endpoint
 const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
-    const service = postsService(fastify);
+  const service = postsService(fastify);
 
   fastify.post("/posts", async (request, reply) => {
     // Ensure the request is multipart
@@ -89,37 +89,37 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   });
 
   // GET route to fetch a post by its ID
-    fastify.get("/posts/:id", async (request, reply) => {
-      // Use a type assertion to specify the shape of the request parameters
-      const { id } = request.params as { id: string };
+  fastify.get("/posts/:id", async (request, reply) => {
+    // Use a type assertion to specify the shape of the request parameters
+    const { id } = request.params as { id: string };
 
-      // Call the service method, passing the parsed ID
-      const post = await service.getById(parseInt(id, 10));
+    // Call the service method, passing the parsed ID
+    const post = await service.getById(parseInt(id, 10));
 
-      if (!post) {
-        // If the post isn't found, return a 404 Not Found error
-        reply.code(404).send({ error: "Post not found" });
-      }
+    if (!post) {
+      // If the post isn't found, return a 404 Not Found error
+      reply.code(404).send({ error: "Post not found" });
+    }
 
       // Return the post; Fastify handles the JSON serialization
       return post;
-    });
+  });
 
-    // DELETE route to delete a post by its ID
-    fastify.delete("/posts/:id", async (request, reply) => {
-      const { id } = request.params as { id: string };
+  // DELETE route to delete a post by its ID
+  fastify.delete("/posts/:id", async (request, reply) => {
+    const { id } = request.params as { id: string };
 
-      // Attempt to delete the post using your service
-      const deletedPost = await service.delete(parseInt(id, 10));
+    // Attempt to delete the post using your service
+    const deletedPost = await service.delete(parseInt(id, 10));
 
-      if (!deletedPost) {
-        // If the post to be deleted is not found, return a 404 Not Found error
-        reply.code(404).send({ error: "Post not found" });
-      }
+    if (!deletedPost) {
+      // If the post to be deleted is not found, return a 404 Not Found error
+      reply.code(404).send({ error: "Post not found" });
+    }
 
-      // Return a success message and the ID of the deleted post
-      reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
-    });
+    // Return a success message and the ID of the deleted post
+    reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
+  });
 };
 
 export { postsRoutes };
