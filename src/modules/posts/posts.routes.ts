@@ -1,7 +1,6 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { postsService } from "./posts.service";
 import { z } from "zod"; // Import Zod for validation
-import { CreatePostDto } from "./posts.types";
 
 // Define a Zod schema for the expected form fields
 const createPostSchema = z.object({
