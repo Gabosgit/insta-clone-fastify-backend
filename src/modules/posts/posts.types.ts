@@ -17,6 +17,7 @@ const postSchema = z.object({
     created_at: z.string(), // SQLite returns DATETIME as a string by default
 })
 
+
 // This will be useful for validating the response from the `GET /posts` endpoint.
 const postsSchema = z.array(postSchema)
 

@@ -20,6 +20,23 @@ const reelsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
     const allReels = await service.getAll();
     return reply.code(200).send(allReels);
   });
+
+  // GET route to fetch a reel by its ID
+  fastify.get("/reels/:id", async (request, reply) => {
+    // Use a type assertion to specify the shape of the request parameters
+    const { id } = request.params as { id: string };
+
+    // Call the service method, passing the parsed ID
+    const reel = await service.getById(parseInt(id, 10));
+
+    if (!reel) {
+      // If the reel isn't found, return a 404 Not Found error
+      reply.code(404).send({ error: "Reel not found" });
+    }
+
+      // Return the reel; Fastify handles the JSON serialization
+      return reel;
+  });
 };
 
 export { reelsRoutes };

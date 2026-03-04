@@ -3,6 +3,10 @@ import fs from "fs/promises";
 import { randomUUID } from "crypto";
 
 export const fileStorageService = {
+    // Recieves the file buffer
+    // Creates a unique filename
+    // Storage the file in a url
+    // Returns the saved file url
   async saveImage(
     fileBuffer: Buffer,
     originalFilename: string,

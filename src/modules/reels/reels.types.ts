@@ -5,7 +5,7 @@ import { z } from "zod";
 //which will be the shape of the reel object when it is passed to our database.
 const createReelDtoSchema = z.object({
   video_url: z.string().url(),
-  thumbnail_url: z.string().url(),
+  thumbnail_url: z.string().url().optional(),
   caption: z.string().nullable().optional(), // Caption can be a string, null, or undefined
 });
 

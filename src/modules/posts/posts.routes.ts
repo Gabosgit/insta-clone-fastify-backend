@@ -1,8 +1,8 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { postsService } from "./posts.service";
 import { z } from "zod"; // Import Zod for validation
-
-//import { CreatePostDto } from "./posts.types";
+import { Post } from "./posts.types"; // Import the post schema for validation
+import path from "path";
 
 // Define a Zod schema for the expected form fields
 const createPostSchema = z.object({
@@ -71,6 +71,7 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       });
 
       return reply.code(201).send(newPost);
+
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply
@@ -89,37 +90,74 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   });
 
   // GET route to fetch a post by its ID
-    fastify.get("/posts/:id", async (request, reply) => {
-      // Use a type assertion to specify the shape of the request parameters
-      const { id } = request.params as { id: string };
+  fastify.get("/posts/:id", async (request, reply) => {
+    // Use a type assertion to specify the shape of the request parameters
+    const { id } = request.params as { id: string };
 
-      // Call the service method, passing the parsed ID
-      const post = await service.getById(parseInt(id, 10));
+    // Call the service method, passing the parsed ID
+    const post = await service.getById(parseInt(id, 10));
 
-      if (!post) {
-        // If the post isn't found, return a 404 Not Found error
-        reply.code(404).send({ error: "Post not found" });
-      }
+    if (!post) {
+      // If the post isn't found, return a 404 Not Found error
+      reply.code(404).send({ error: "Post not found" });
+    }
 
       // Return the post; Fastify handles the JSON serialization
       return post;
-    });
+  });
 
-    // DELETE route to delete a post by its ID
-    fastify.delete("/posts/:id", async (request, reply) => {
-      const { id } = request.params as { id: string };
+  // DELETE route to delete a post by its ID
+  fastify.delete("/posts/:id", async (request, reply) => {
+    const { id } = request.params as { id: string };
 
-      // Attempt to delete the post using your service
-      const deletedPost = await service.delete(parseInt(id, 10));
+    // 1️⃣ Get post from DB
+    const post: Post | null = await service.getById(parseInt(id, 10));
 
-      if (!deletedPost) {
-        // If the post to be deleted is not found, return a 404 Not Found error
-        reply.code(404).send({ error: "Post not found" });
-      }
+    if (!post) {
+      return reply.code(404).send({ error: 'Post not found' })
+    }
 
-      // Return a success message and the ID of the deleted post
-      reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
-    });
+    // 2️⃣ Delete file from filesystem
+    const fs = require('fs/promises')
+      // Imports Node.js’s built-in file system module
+      // Specifically the promise-based version
+      // Allows you to use await instead of callbacks
+
+
+    // To make TypeScript known img_url should be a string, not null.
+    if (!post.img_url) {
+      return reply.code(400).send({ error: "Post has no image" })
+    }
+    // Extract filename from URL
+    const fileName = post.img_url.split('/uploads/')[1]
+    
+    // config variable locating uploads under public
+    const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
+
+    const filePath = path.join(UPLOADS_DIR, fileName);
+    
+    console.log(`Attempting to delete file at path: ${filePath}`)
+      
+    // `unlink()` removes a file from the filesystem
+    // If successful → file is permanently deleted
+    // If the file does not exist → it throws an error
+    await fs.unlink(filePath).catch(() => {
+      // Optional: log but don't crash if file missing
+      console.log(`File at ${filePath} not found, skipping deletion.`);
+    })
+
+    // Attempt to delete the post using your service
+    const deletedPost = await service.delete(parseInt(id, 10));
+
+    if (!deletedPost) {
+      // If the post to be deleted is not found, return a 404 Not Found error
+      reply.code(404).send({ error: "Post not found" });
+    }
+
+    // Return a success message and the ID of the deleted post
+    reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
+
+  });
 };
 
 export { postsRoutes };
