@@ -6,6 +6,12 @@ import {
   type TransactionHelpers,
 } from "./database.transactions";
 
+// Plugin usage in Fastify responsible for:
+    // Opening DB connection
+    // Creating tables
+    // Registering transactions on Fastify
+    // Closing DB on shutdown
+
 declare module "fastify" {
   interface FastifyInstance {
     db: Database.Database;
