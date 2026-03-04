@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { CreatePostDto } from "./posts.types";
 import { fileStorageService } from "../../common/file-storage.service"; // Import the new service
+import { Post } from "./posts.types"; // Import the Post type for return types
 
 type CreatePostData = {
   img_url: string; // This will now come from our storage service
@@ -54,11 +55,11 @@ const postsService = (fastify: FastifyInstance) => {
     },
 
     // getById method accept an ID as an argument
-    getById: async (id: number) => {
+    async getById(id: number): Promise<Post | null> {
         fastify.log.info(`Fetching post with ID: ${id}`);
         // Pass the received ID to the data transaction layer
         const post = await fastify.transactions.posts.getById(id);
-        return post;
+        return post ?? null; // Return the post or null if not found
     },
 
     // delete method accepts an ID as an argument
