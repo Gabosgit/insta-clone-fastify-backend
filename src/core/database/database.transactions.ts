@@ -1,15 +1,29 @@
 import type { Database } from "better-sqlite3";
 import { CreatePostDto } from "src/modules/posts/posts.types";
-import { CreateReelDto } from "src/modules/reels/reels.types";
+import type { Post } from "src/modules/posts/posts.types";
+import { CreateReelDto, Reel } from "src/modules/reels/reels.types";
 import { CreateTaggedDto } from "src/modules/tagged/tagged.types";
 import { CreateHighlightDto } from "src/modules/highlights/highlights.types";
 
+// Repository layer responsible for:
+    // Preparing SQL statements
+    // Grouping DB logic by entity (posts, reels, etc.)
+    // Returning helper functions
+    // This is essentially your repository layer.
+
 // This factory function creates and returns our transaction helpers.
 const createTransactionHelpers = (db: Database) => {
-  // We use prepared statements for security and performance.
-  // Post statements
+  
+
+  // statements: low-level database layer.
+      // We use prepared query reuse statements for security and performance.
+      // Statements is basically: A compiled SQL cache. Centralized SQL.
+      // It creates prepared SQL statements once when the server starts. After that, .get() / .run() is fast.
   const statements = {
-    getPostById: db.prepare("SELECT * FROM posts WHERE id = ?"),
+    // Post statements
+    getPostById: db.prepare<[number], Post>( // return: Post | undefined
+      "SELECT * FROM posts WHERE id = ?"
+    ),
     getAllPosts: db.prepare("SELECT * FROM posts"),
     createPost: db.prepare(
       "INSERT INTO posts (img_url, caption) VALUES (@img_url, @caption) RETURNING *",
@@ -17,7 +31,9 @@ const createTransactionHelpers = (db: Database) => {
     deletePost: db.prepare("DELETE FROM posts WHERE id = ? RETURNING *"),
 
     // Reel statements
-    getReelById: db.prepare("SELECT * FROM reels WHERE id = ?"),
+    getReelById: db.prepare<[number], Reel>(
+      "SELECT * FROM reels WHERE id = ?"
+    ),
     getAllReels: db.prepare("SELECT * FROM reels"),
     createReel: db.prepare(
       "INSERT INTO reels (video_url, thumbnail_url, caption) VALUES (@video_url, @thumbnail_url, @caption) RETURNING *",
@@ -44,10 +60,14 @@ const createTransactionHelpers = (db: Database) => {
   };
 
 
-  // New posts helper object
+  //domain layer (repository layer)
+      // It wraps raw SQL statements into meaningful operations.
+      // Domain abstraction.
+      
+  // New posts helper object.
   const posts = {
-    getById: (id: number) => {
-      return statements.getPostById.get(id);
+    getById: (id: number): Post | null => {
+      return statements.getPostById.get(id) ?? null;
     },
     getAll: () => {
       return statements.getAllPosts.all();
@@ -62,8 +82,8 @@ const createTransactionHelpers = (db: Database) => {
 
   // New reels helper object
   const reels = {
-    getById: (id: number) => {
-      return statements.getReelById.get(id);
+    getById: (id: number): Reel | null => {
+      return statements.getReelById.get(id) ?? null;
     },
     getAll: () => {
       return statements.getAllReels.all();
