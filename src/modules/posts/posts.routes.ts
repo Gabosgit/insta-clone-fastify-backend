@@ -1,6 +1,8 @@
 import type { FastifyInstance, FastifyPluginAsync } from "fastify";
 import { postsService } from "./posts.service";
 import { z } from "zod"; // Import Zod for validation
+import { Post } from "./posts.types"; // Import the post schema for validation
+import path from "path";
 
 // Define a Zod schema for the expected form fields
 const createPostSchema = z.object({
@@ -108,6 +110,42 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   fastify.delete("/posts/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
 
+    // 1️⃣ Get post from DB
+    const post: Post | null = await service.getById(parseInt(id, 10));
+
+    if (!post) {
+      return reply.code(404).send({ error: 'Post not found' })
+    }
+
+    // 2️⃣ Delete file from filesystem
+    const fs = require('fs/promises')
+      // Imports Node.js’s built-in file system module
+      // Specifically the promise-based version
+      // Allows you to use await instead of callbacks
+
+
+    // To make TypeScript known img_url should be a string, not null.
+    if (!post.img_url) {
+      return reply.code(400).send({ error: "Post has no image" })
+    }
+    // Extract filename from URL
+    const fileName = post.img_url.split('/uploads/')[1]
+    
+    // config variable locating uploads under public
+    const UPLOADS_DIR = path.join(process.cwd(), "public/uploads");
+
+    const filePath = path.join(UPLOADS_DIR, fileName);
+    
+    console.log(`Attempting to delete file at path: ${filePath}`)
+      
+    // `unlink()` removes a file from the filesystem
+    // If successful → file is permanently deleted
+    // If the file does not exist → it throws an error
+    await fs.unlink(filePath).catch(() => {
+      // Optional: log but don't crash if file missing
+      console.log(`File at ${filePath} not found, skipping deletion.`);
+    })
+
     // Attempt to delete the post using your service
     const deletedPost = await service.delete(parseInt(id, 10));
 
@@ -118,6 +156,7 @@ const postsRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
     // Return a success message and the ID of the deleted post
     reply.code(200).send({ message: `Post with ID ${id} deleted successfully` });
+
   });
 };
 
