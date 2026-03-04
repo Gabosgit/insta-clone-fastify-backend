@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { CreateReelDto, createReelDtoSchema } from "./reels.types";
+import { CreateReelDto, createReelDtoSchema, Reel } from "./reels.types";
 
 // Business logic
 const reelsService = (fastify: FastifyInstance) => {
@@ -19,6 +19,14 @@ const reelsService = (fastify: FastifyInstance) => {
         fastify.log.info("Fetching all reels");
         const allReels = await fastify.transactions.reels.getAll();
         return allReels;
+    },
+
+    // getById method accept an ID as an argument
+    async getById(id: number): Promise<Reel | null> {
+        fastify.log.info(`Fetching reel with ID: ${id}`);
+        // Pass the received ID to the data transaction layer
+        const reel = await fastify.transactions.reels.getById(id);
+        return reel ?? null; // Return the reel or null if not found
     },
 
   };
